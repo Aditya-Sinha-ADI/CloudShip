@@ -1,0 +1,16 @@
+{
+  "name": "auto-deploy-gcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/cloudbuild": "^5.4.0",
+    "express": "^5.2.1"
+  }
+}
