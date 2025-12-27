@@ -4,7 +4,7 @@ import { handlePushEvent } from "./webhook.service.js";
 
 export const githubWebhookRouter = express.Router();
 
-githubWebhookRouter.post("/", (req, res) => {
+githubWebhookRouter.post("/", async (req, res) => {
   try {
     validateGithubWebhook(req);
     const result = handlePushEvent(req.body);
