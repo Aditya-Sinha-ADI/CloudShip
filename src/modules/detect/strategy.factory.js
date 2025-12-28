@@ -1,5 +1,3 @@
-// src/modules/detect/strategy.factory.js
-
 export function selectDeployStrategy(detectionResult) {
   const { type, framework } = detectionResult;
 
@@ -14,7 +12,7 @@ export function selectDeployStrategy(detectionResult) {
   if (type === "frontend") {
     return {
       strategy: "static-site",
-      buildRequired: true,
+      buildRequired: detectionResult.buildRequired ?? true,
       framework
     };
   }

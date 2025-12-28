@@ -12,7 +12,6 @@ export function verifyGithubSignature(secret, payload, signature) {
 
   const received = signature.replace("sha256=", "");
 
-  // IMPORTANT: length check before timingSafeEqual
   if (expected.length !== received.length) {
     return false;
   }

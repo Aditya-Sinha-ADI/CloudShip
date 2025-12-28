@@ -7,6 +7,21 @@ app.listen(PORT, () => {
   console.log(`Version 2 server running on port ${PORT}`);
 });
 
-// setInterval(() => {
-//   console.log("Server still alive");
-// }, 5000);
+
+
+import { detectFromRepo } from "./modules/detect/detect.service.js";
+import { selectDeployStrategy } from "./modules/detect/strategy.factory.js";
+import { executeDeployment } from "./modules/deploy/deploy.strategy.js";
+app.post("/__local_test/deploy", async (req, res) => {
+  try {
+    const { repoUrl } = req.body;
+
+    const detection = detectFromRepo(repoUrl);
+    const strategy = selectDeployStrategy(detection);
+    const result = await executeDeployment(strategy, detection);
+
+    res.json({ detection, strategy, result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});

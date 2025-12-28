@@ -1,37 +1,39 @@
-// src/modules/detect/project-type.js
-
 export function detectProjectType(packageJson) {
-  if (!packageJson || !packageJson.scripts) {
+  const scripts = packageJson.scripts || {};
+  const deps = {
+    ...(packageJson.dependencies || {}),
+    ...(packageJson.devDependencies || {}),
+  };
+
+  const hasBuild = !!scripts.build;
+
+  const isFrontendFramework =
+    deps.react ||
+    deps["react-scripts"] ||
+    deps.vue ||
+    deps.svelte ||
+    deps["@sveltejs/kit"] ||
+    deps.vite ||
+    deps.astro ||
+    deps["solid-js"];
+    
+  if (hasBuild && isFrontendFramework) {
     return {
-      type: "unsupported",
-      framework: null
+      type: "frontend",
+      framework: "spa",
+      buildRequired: true,
     };
   }
 
-  const scripts = packageJson.scripts;
-  const deps = {
-    ...packageJson.dependencies,
-    ...packageJson.devDependencies
+  if (scripts.start || scripts["start:prod"]) {
+    return {
+      type: "backend",
+      framework: "node",
+    };
+  }
+
+  return {
+    type: "unsupported",
+    reason: "No recognizable frontend or backend contract",
   };
-
-  // 1. Detect type
-  let type = "unsupported";
-
-  if (scripts.start) {
-    type = "backend";
-  } else if (scripts.build) {
-    type = "frontend";
-  }
-
-  // 2. Detect framework
-  let framework = null;
-
-  if (deps?.next) framework = "next";
-  else if (deps?.react) framework = "react";
-  else if (deps?.vite) framework = "vite";
-  else if (deps?.express || deps?.fastify || deps?.["@nestjs/core"]) {
-    framework = "node";
-  }
-
-  return { type, framework };
 }
